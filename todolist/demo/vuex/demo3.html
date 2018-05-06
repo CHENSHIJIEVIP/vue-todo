@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>vuex-actions</title>
+	<script src="../../node_modules\vue\dist\vue.js"></script>
+	<script src="../../node_modules\vuex\dist\vuex.js"></script>
+</head>	
+<body>
+	<div id="app">
+		<h2>{{msg}}</h2>
+		<a href="javascript:;" @click="add">++</a>
+		<counter></counter>
+
+	</div>
+	<script>
+		//局部组件
+		const counter = {
+			// 组件模板
+			template:`
+				<div>
+					<div><p>dianjiliang:{{counts}}</p></div>
+					<div>username:{{names}}</div>
+					<p>{{namess}}</p>
+				</div>
+				
+			`,
+			// 组件中的计算属性
+			computed:{
+				counts(){
+					return this.$store.state.count
+				},
+				names(){
+					return this.$store.state.name
+				},
+				namess(){
+					return this.$store.getters.namess
+				}
+			}
+		}
+		// 注册vuex的store
+		const store = new Vuex.Store({
+			// vuex仓库中的状态数据
+			state:{
+				count:10,
+				name:'tom'
+			},
+			// vuex中的计算属性，可改变状态数据
+			getters:{
+				namess(state){
+					return state.name+' hello'
+				}
+			},
+			// vuex中改变仓库状态数据的同步方法
+			mutations:{
+				increment(state,num){
+					state.count += num
+				},
+				upateName(state,username){
+					state.name = username
+				}
+			},
+			// vuex中改变仓库状态数据的异步提交mutations方法
+			actions:{
+				incrementAction(context,num){
+					context.commit('increment',num)
+				},
+				updatNameAction(context,username){
+					context.commit('upateName',username)
+				}
+			}
+		});
+		new Vue({
+			el:'#app',
+			store,
+			components:{
+				counter
+			},
+			data:{
+				msg:'vuex使用'
+			},
+			methods:{
+				add(){
+					// 提交mutations的方法（直接提交mutations）
+					/*this.$store.commit('increment',20)
+					this.$store.commit('upateName','jack')*/
+					// 提交actions的方法（actions提交mutations后，再提交actions）
+					this.$store.dispatch('incrementAction',50)
+					this.$store.dispatch('updatNameAction','jason')
+				}
+			}
+			
+		})
+	</script>
+</body>
+</html>

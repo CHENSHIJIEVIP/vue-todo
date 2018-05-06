@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>axios</title>
+	<script src="../../node_modules/vue/dist/vue.js"></script>
+	<script src="../../node_modules/axios/dist/axios.js"></script>
+</head>
+<body>
+	<div id="app">
+		<a href="javascript:;" @click="get">get</a>
+		<a href="javascript:;" @click="post">post</a>	
+		<a href="javascript:;" @click="http">http</a>
+		<div><span>{{msg}}</span></div>
+	</div>
+	
+	<script>
+		new Vue({
+			el:'#app',
+			data:{
+				msg:'msg'
+			},
+			mounted(){
+				axios.interceptors.request.use(req=>{
+					console.log('request init.');
+					return req;
+				}),
+				axios.interceptors.response.use(res=>{
+					console.log('response init.');
+					return res;
+				})
+			},
+			methods:{
+				get(){
+					axios.get('../../package.json',{
+						params:{
+							userId:'999'
+						},
+						headers:{
+							token:'jack'
+						}
+					}).then(res=>{
+						this.msg = res.data
+						console.log(res.data)
+					}).catch(error=>{
+						console.log(error)
+					})
+				},
+				post(){
+					axios.post('../../package.json',{
+						userId:'888'
+					},{
+						headers:{
+							token:'jack'
+						}
+					}).then(res=>{
+						this.msg = res.data;
+					}).catch(error=>{
+						console.log(error);
+					})
+				},
+				http(){
+					axios({
+						url:'../../package.json',
+						method:'get',
+						data:{
+							userId:'101'
+						},
+						headers:{
+							token:'http-text'
+						}
+					}).then(res=>{
+						this.msg = res.data
+					}).catch(error=>{
+						console.log(error)
+					})
+				}
+			}
+		})
+
+	</script>
+
+</body>
+</html>
